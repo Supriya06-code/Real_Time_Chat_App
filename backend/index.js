@@ -29,10 +29,27 @@ app.use(express.static(path.join(__dirname,"frontend","dist")))
 app.get("*",(req,res)=>{
     res.sendFile(path.join(__dirname,"frontend","dist","index.html"))
 })
-const server = createServer(app);
-const PORT = process.env.PORT || 3000
+// Connect to MongoDB
+const startServer = async () => {
+    try {
+        await dbConnect();
+        const server = createServer(app);
+        const PORT = process.env.PORT || 3000;
 
-server.listen(PORT,()=>{
-    dbConnect();
-    console.log(`Working at ${PORT}`);
-})
+        server.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error("Failed to connect to MongoDB:", error);
+    }
+};
+
+// Start the server
+startServer();
+// const server = createServer(app);
+// const PORT = process.env.PORT || 3000
+
+// server.listen(PORT,()=>{
+//     dbConnect();
+//     console.log(`Working at ${PORT}`);
+// })
