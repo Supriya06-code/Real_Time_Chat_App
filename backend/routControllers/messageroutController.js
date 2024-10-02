@@ -61,3 +61,24 @@ res.status(201).send(newMessages);
     // console.log(error);
   }
 };
+
+export const getMessages=async(req,res)=>{
+  try{
+    
+    const {id: receiverId} = req.params;
+    const senderId = req.user._id;
+    const chats = await Conversation.findOne({
+     participants:{$all:[senderId,receiverId]}
+    }).populate("messages")
+    if(!chats) return res.status(200).send([]);
+    const message = chats.messages;
+    res.status(200).send(message)
+  }catch(error){
+    res.status(500).send({
+      success: false,
+      message: error
+
+    });
+    console.log(error);
+  }
+};
