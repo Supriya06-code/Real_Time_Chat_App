@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from 'dotenv'
 import dbConnect from "./DB/dbConnect.js";
 import authRouter from  './rout/authUser.js'
+import messageRouter from './rout/messageRout.js'
 // import messageRouter from './rout/messageRout.js'
 // import userRouter from './rout/userRout.js'
 // import cookieParser from "cookie-parser";
@@ -10,6 +11,7 @@ import path from "path";
 import { fileURLToPath } from 'url'; // Import for converting URL to path
 import { dirname } from 'path'; // Import to get the directory name
 import { createServer } from "http";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 // Define __dirname in ES modules
@@ -18,10 +20,10 @@ const __dirname = dirname(__filename); // Get the directory name
 const app = express();
 
 app.use(express.json());
-
+app.use(cookieParser())
 
 app.use('/api/auth',authRouter)
-// app.use('/api/message',messageRouter)
+app.use('/api/message',messageRouter)
 // app.use('/api/user',userRouter)
 
 app.use(express.static(path.join(__dirname,"frontend","dist")))
