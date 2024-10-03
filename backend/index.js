@@ -4,7 +4,7 @@ import dbConnect from "./DB/dbConnect.js";
 import authRouter from  './rout/authUser.js'
 import messageRouter from './rout/messageRout.js'
 // import messageRouter from './rout/messageRout.js'
-// import userRouter from './rout/userRout.js'
+ import userRouter from './rout/userRout.js'
 // import cookieParser from "cookie-parser";
 import path from "path";
 // import {app , server} from './Socket/socket.js'
@@ -24,7 +24,7 @@ app.use(cookieParser())
 
 app.use('/api/auth',authRouter)
 app.use('/api/message',messageRouter)
-// app.use('/api/user',userRouter)
+app.use('/api/user',userRouter)
 
 app.use(express.static(path.join(__dirname,"frontend","dist")))
 
