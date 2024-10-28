@@ -25,6 +25,12 @@ const Login = () => {
           >
             Login
           </button>
+          <button
+            type='submit'
+            className='w-full p-2 rounded bg-purple-600 text-white hover:bg-blue-700 transition duration-300'
+          >
+            Guest user
+          </button>
         </form>
         <div className='pt-2'>
 <p className='text-sm font-semibold text-gray-800'>Don't have an Account?<Link to={'/signup'}><span className='text-gray-950'>Register Now!!</span> </Link></p>
