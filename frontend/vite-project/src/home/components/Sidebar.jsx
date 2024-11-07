@@ -5,6 +5,7 @@ import { useState } from 'react'
 import {toast} from 'react-toastify'
 import{useNavigate} from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext';
+import { useEffect } from 'react'
 const Sidebar = () => {
   const navigate = useNavigate();
   const {authUser} = useAuth();
@@ -12,6 +13,28 @@ const Sidebar = () => {
   const [searchInput, setSearchInput] = useState('')
   const[searchUser, setSearchUser] =useState([])
   const[loading, setLoading] =useState(false)
+  const[chatUser, setChatUser] = useState([]);
+const[selectedUserId,setSelectedUserId] = useState(null);
+  useEffect(()=>{
+    const chatUserHandler=async()=>{
+      setLoading(true)
+try{
+const chatters = await axios.get(`/api/user/currentchatters`)
+const data = chatters.data;
+if(data.success===false){
+  setLoading(false)
+  console.log(data.message)
+}
+setLoading(false)
+setChatUser(data)
+}catch (error){
+setLoading(false)
+console.log(error);
+}
+    }
+    chatUserHandler()
+  },[])
+  console.log(chatUser);
   const handleSearchSubmit=async(e)=>{
 e.preventDefault();
 setLoading(true)
@@ -33,10 +56,10 @@ setLoading(false)
 console.log(error);
 }
   }
-  console.log(searchUser);
-  console.log("authUser:", authUser);
-  console.log("Profile Picture URL:", authUser?.profilepic);
-
+ const handleUserClick=(user)=>{
+  setSelectedUserId(user._id)
+ }
+console.log(searchUser);
   return (
     <div className='h-full w-auto px-1'>
       <div className='flex justify-between gap-2'>
@@ -55,6 +78,47 @@ console.log(error);
 
       </div>
       <div className='divider px-3'></div>
+      {searchUser?.length>0?(
+<></>
+      ):(
+        <>
+        <div className="min-h-[70%] max-h-[80%] m overrflow-y-auto scrollbar">
+<div className='w-auto'>
+  {chatUser.length === 0 ? (
+    <>
+    <div className='font-bold items-center flex flex-col text-xl text-yellow-500'>
+    <h1>🤔 Why are you Alone!!</h1>
+    <h1>🔍 Search username to chat</h1>
+    </div>
+    </>
+  ):(
+    <>
+    {chatUser.map((user,index)=>(
+      <div key={user._id}>
+        <div 
+        onClick={()=>handleUserClick(user)}
+        className={`flex gap-3 items-center rounded p-2 py-1 cursor-pointer ${selectedUserId === user?._id ? 'bg-sky-500' : ''}`}>
+
+<div className='avatar'>
+  <div className='w-12 rounded-full'>
+    <img src={user.profilepic} alt='user.img'/>
+  </div>
+  </div>
+<div className='flex flex-col flex-1'>
+  <p className='font-bold text-gray-950'>{user.username}</p>
+
+</div>
+        </div>
+        <div className='divider divide-solid px-3 h-[1px]'></div>
+        </div>
+    ))}
+    </>
+  )}
+  </div>
+
+        </div>
+        </>
+      )}
     </div>
   )
 }
