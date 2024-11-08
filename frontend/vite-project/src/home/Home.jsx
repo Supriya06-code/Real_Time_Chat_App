@@ -6,17 +6,23 @@ const Home = () => {
     const {authUser} = useAuth();
     
   return (
-    <div className="flex flex-col items-center justify-center max-w-full mx-auto">
-      <div className="w-full p-6 rounded-lg shadow-lg bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-50">
-
-        <div>
+    
+        <div className='flex justify-between min-w-full
+     md:min-w-[550px] md:max-w-[65%]
+      px-2 h-[95%] md:h-full  
+      rounded-xl shadow-lg
+       bg-gray-400 bg-clip-padding
+        backdrop-filter backdrop-blur-lg 
+        bg-opacity-0'
+        >
+      <div className='w-full py-2 md:flex'>
 <Sidebar/>
         </div>
         <div>
 <MessageContainer/>
         </div>
       </div>
-    </div>
+  
   )
 }
 

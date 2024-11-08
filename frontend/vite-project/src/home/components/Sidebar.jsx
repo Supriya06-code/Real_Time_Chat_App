@@ -6,16 +6,21 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
+import {BiLogOut} from 'react-icons/bi';
 import {IoArrowBackSharp} from 'react-icons/io5'
+import userConversation from '../../Zustans/useConversation';
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { authUser } = useAuth();
+  const { authUser, setAuthUser } = useAuth();
 
   const [searchInput, setSearchInput] = useState("");
   const [searchUser, setSearchUser] = useState([]);
   const [loading, setLoading] = useState(false);
   const [chatUser, setChatUser] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const {message, selectedConversation, setSelectedConversation} = userConversation();
+
+  //Show user with you chatted
   useEffect(() => {
     const chatUserHandler = async () => {
       setLoading(true);
@@ -36,10 +41,74 @@ const Sidebar = () => {
     chatUserHandler();
   }, []);
   console.log(chatUser);
+  //logout
+  // const handleLogout=async()=>{
+
+  //   const confirmlogout = window.prompt("type 'UserName' To LOGOUT");
+  //   if(confirmlogout === authUser.username){
+  //     setLoading(true)
+  //     try{
+  //     const logout = await axios.post('/api/auth/logout')
+  //     const data = logout.data;
+  //     if (data?.success === false) {
+  //       setLoading(false);
+  //       console.log(data?.message);
+  //     }
+  //     toast.info(data?.message)
+  //     localStorage.removeItem('chatapp')
+  //     setAuthUser(null)
+  //     setLoading(false)
+  //     navigate('/login')
+  //     }catch(error){
+  //       setLoading(false)
+  //       console.log(error);
+  //     }
+  //   }else{
+  //     toast.info("LogOut Cancelled")
+  //   }
+    
+  // }
+  const handleLogout = async () => {
+    // Ensure authUser is defined before proceeding
+    if (!authUser) {
+      toast.info("You are not logged in.");
+      return;
+    }
+  
+    const confirmlogout = window.prompt("Type your username to LOGOUT");
+  
+    // Check if the user input matches the authUser's username
+    if (confirmlogout === authUser.username) {
+      setLoading(true);
+      try {
+        const logout = await axios.post('/api/auth/logout');
+        const data = logout.data;
+  
+        if (data?.success === false) {
+          setLoading(false);
+          console.log(data?.message);
+        } else {
+          toast.info(data?.message);
+          localStorage.removeItem('chatapp');
+          setAuthUser(null);
+          setLoading(false);
+          navigate('/login');
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    } else {
+      toast.info("LogOut Cancelled");
+    }
+  };
+  
+  //back from search result
   const handleSearchback =()=>{
     setSearchUser([]);
     setSearchInput('')
   }
+  //Show user from the search result
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -61,8 +130,11 @@ const Sidebar = () => {
       console.log(error);
     }
   };
+  //show which user is selected
   const handleUserClick = (user) => {
+    setSelectedConversation(user)
     setSelectedUserId(user._id);
+    
   };
   console.log(searchUser);
   return (
@@ -162,6 +234,12 @@ const Sidebar = () => {
                 </>
               )}
             </div>
+          </div>
+          <div className='mt-auto px-1 py-1 flex'>
+            <button onClick={handleLogout} className='hover:bg-red-600  w-10 cursor-pointer hover:text-white rounded-lg'>
+              <BiLogOut size={25}/>
+            </button>
+            <p>Logout</p>
           </div>
         </>
       )}
