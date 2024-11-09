@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import {BiLogOut} from 'react-icons/bi';
 import {IoArrowBackSharp} from 'react-icons/io5'
 import userConversation from '../../Zustans/useConversation';
-const Sidebar = () => {
+const Sidebar = ({onSelectUser}) => {
   const navigate = useNavigate();
   const { authUser, setAuthUser } = useAuth();
 
@@ -132,6 +132,7 @@ const Sidebar = () => {
   };
   //show which user is selected
   const handleUserClick = (user) => {
+    onSelectUser(user);
     setSelectedConversation(user)
     setSelectedUserId(user._id);
     
