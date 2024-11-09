@@ -8,7 +8,7 @@ export const sendMessage =async(req, res)=>{
       throw new Error('Sender ID is undefined. Please ensure user is authenticated.');
       
     }
-const {message} = req.body;
+const {messages} = req.body;
 const senderId = req.user._id;
 const {id: receiverId} = req.params;
 
@@ -31,7 +31,7 @@ if(!chats){
 const newMessages = new Message({
   senderId,
   receiverId,
-  message,
+  message:messages,
   conversationId:chats._id,
 });
 console.log(chats);
