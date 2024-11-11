@@ -5,6 +5,8 @@ import { useRef } from "react";
 import { TiMessages } from "react-icons/ti";
 import { IoArrowBackSharp, IoSend } from "react-icons/io5";
 import axios from "axios";
+import { useSocketContext } from "../../context/socketContext";
+import notify from '../../assets/sound/notification.mp3';
 const MessageContainer = ({ onBackUser }) => {
   const {
     messages,
@@ -17,6 +19,16 @@ const MessageContainer = ({ onBackUser }) => {
   const [sending,setSending] = useState(false);
   const[sendData,setSendData] = useState("")
   const [loading, setLoading] = useState(false);
+const{socket} = useSocketContext();
+useEffect(()=>{
+  socket?.on("newMessage",(newMessage)=>{
+const sound = new Audio(notify);
+sound.play();
+setMessage([...messages,newMessage])
+  })
+  return()=> socket?.off("newMessage");
+},[socket, setMessage, messages])
+
   useEffect(()=>{
     setTimeout(()=>{
       lastMessageRef?.current?.scrollIntoView({behavior:"smooth"})
@@ -59,6 +71,7 @@ if (data.success === false) {
 }
 setSending(false);
 setMessage([...messages,data])
+setSendData("");
 }
 catch (error){
   setSending(false);

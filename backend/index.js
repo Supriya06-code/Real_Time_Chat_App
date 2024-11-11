@@ -1,92 +1,42 @@
-// import express from "express";
-// import dotenv from 'dotenv'
-// import dbConnect from "./DB/dbConnect.js";
-// import authRouter from  './rout/authUser.js'
-// import messageRouter from './rout/messageRout.js'
-// // import messageRouter from './rout/messageRout.js'
-//  import userRouter from './rout/userRout.js'
-// // import cookieParser from "cookie-parser";
-// import path from "path";
-// // import {app , server} from './Socket/socket.js'
-// import { fileURLToPath } from 'url'; // Import for converting URL to path
-// import { dirname } from 'path'; // Import to get the directory name
-// import { createServer } from "http";
-// import cookieParser from "cookie-parser";
-// import {app, server} from './Socket/socket.js'
-// dotenv.config();
-// // Define __dirname in ES modules
-// const __filename = fileURLToPath(import.meta.url); // Get the file name
-// const __dirname = dirname(__filename); // Get the directory name
+import express from 'express';
+import dotenv from 'dotenv';
+import dbConnect from './DB/dbConnect.js';
+import authRouter from './rout/authUser.js';
+import messageRouter from './rout/messageRout.js';
+import userRouter from './rout/userRout.js';
+import cookieParser from 'cookie-parser';
+import path from 'path';
+import cors from 'cors'; // Import cors
 
-
-// app.use(express.json());
-// app.use(cookieParser())
-
-// app.use('/api/auth',authRouter)
-// app.use('/api/message',messageRouter)
-// app.use('/api/user',userRouter)
-
-// app.use(express.static(path.join(__dirname,"frontend","dist")))
-
-// app.get("*",(req,res)=>{
-//     res.sendFile(path.join(__dirname,"frontend","dist","index.html"))
-// })
-// // Connect to MongoDB
-// const startServer = async () => {
-//     try {
-//         await dbConnect();
-//         const server = createServer(app);
-//         const PORT = process.env.PORT || 3000;
-
-//         server.listen(PORT, () => {
-//             console.log(`Server is running on port ${PORT}`);
-//         });
-//     } catch (error) {
-//         console.error("Failed to connect to MongoDB:", error);
-//     }
-// };
-
-// // Start the server
-// startServer();
-// // const server = createServer(app);
-// // const PORT = process.env.PORT || 3000
-
-// // server.listen(PORT,()=>{
-// //     dbConnect();
-// //     console.log(`Working at ${PORT}`);
-// // })
-import express from "express"
-import dotenv from 'dotenv'
-import dbConnect from "./DB/dbConnect.js";
-import authRouter from  './rout/authUser.js'
-import messageRouter from './rout/messageRout.js'
-import userRouter from './rout/userRout.js'
-import cookieParser from "cookie-parser";
-import path from "path";
-
-import {app , server} from './Socket/socket.js'
-
-const __dirname = path.resolve();
+import { app, server } from './Socket/socket.js';
 
 dotenv.config();
 
+// CORS setup for the Express app
+app.use(cors({
+    origin: 'http://localhost:5173', // Allow frontend to connect
+    methods: ['GET', 'POST'], // Allow these HTTP methods
+    credentials: true, // Allow credentials (cookies) to be sent
+}));
+
+const __dirname = path.resolve();
 
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
-app.use('/api/auth',authRouter)
-app.use('/api/message',messageRouter)
-app.use('/api/user',userRouter)
+app.use('/api/auth', authRouter);
+app.use('/api/message', messageRouter);
+app.use('/api/user', userRouter);
 
-app.use(express.static(path.join(__dirname,"/frontend/dist")))
+app.use(express.static(path.join(__dirname, '/frontend/dist')));
 
-app.get("*",(req,res)=>{
-    res.sendFile(path.join(__dirname,"frontend","dist","index.html"))
-})
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+});
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
-server.listen(PORT,()=>{
+server.listen(PORT, () => {
     dbConnect();
     console.log(`Working at ${PORT}`);
-})
+});
