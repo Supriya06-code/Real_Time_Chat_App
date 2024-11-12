@@ -71,12 +71,12 @@ app.use('/api/user', userRouter);
 
 // Static file serving
 // app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
-app.use(express.static(path.join(__dirname, 'vite-project', 'frontend', 'dist')));
+app.use(express.static(path.join(__dirname,'frontend','vite-project', 'frontend', 'dist')));
 
 // Fallback to `index.html` for Single Page Application (SPA) routing
 app.get('*', (req, res) => {
     // res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'), (err) => {
-        res.sendFile(path.join(__dirname, 'vite-project', 'frontend', 'dist', 'index.html'), (err) => {
+        res.sendFile(path.join(__dirname, 'frontend', 'vite-project', 'frontend', 'dist', 'index.html'), (err) => {
         if (err) {
             res.status(500).send(err);
         }
