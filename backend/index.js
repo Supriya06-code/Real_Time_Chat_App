@@ -55,12 +55,16 @@ dotenv.config();
 
 const __dirname = path.resolve();
 
+// app.use(cors({
+//     origin: ['https://talkcircle-chatapp.onrender.com/'], // Allows local and production frontends
+//     methods: ['GET', 'POST'],
+//     credentials: true,
+// }));
 app.use(cors({
-    origin: ['https://talkcircle-chatapp.onrender.com/'], // Allows local and production frontends
+    origin: ['http://localhost:5173', 'https://talkcircle-chatapp.onrender.com'],
     methods: ['GET', 'POST'],
     credentials: true,
 }));
-
 app.use(express.json());
 app.use(cookieParser());
 
