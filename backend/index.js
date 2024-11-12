@@ -56,7 +56,7 @@ dotenv.config();
 const __dirname = path.resolve();
 
 app.use(cors({
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173', // Allows local and production frontends
+    origin: ['https://talkcircle-chatapp.onrender.com/'], // Allows local and production frontends
     methods: ['GET', 'POST'],
     credentials: true,
 }));
