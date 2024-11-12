@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon backend/index.js",
     "start": "node backend/index.js",
-    "build" : "npm install && cd frontend/vite-project && npm install && npm run build"
+    "build" : "npm install && npm run build --prefix frontend/vite-project"
   },
   "keywords": [],
   "author": "",
