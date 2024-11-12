@@ -6,19 +6,31 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
-import {BiLogOut} from 'react-icons/bi';
-import {IoArrowBackSharp} from 'react-icons/io5'
+import { BiLogOut } from 'react-icons/bi';
+import { IoArrowBackSharp } from 'react-icons/io5'
 import userConversation from '../../Zustans/useConversation';
-const Sidebar = ({onSelectUser}) => {
+import { useSocketContext } from "../../context/socketContext";
+const Sidebar = ({ onSelectUser }) => {
   const navigate = useNavigate();
   const { authUser, setAuthUser } = useAuth();
-
+  const [newMessageUsers, setNewMessageUsers] = useState('');
   const [searchInput, setSearchInput] = useState("");
   const [searchUser, setSearchUser] = useState([]);
   const [loading, setLoading] = useState(false);
   const [chatUser, setChatUser] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const {message, selectedConversation, setSelectedConversation} = userConversation();
+  const { messages, setMessage, selectedConversation, setSelectedConversation } = userConversation();
+  const { onlineUser, socket } = useSocketContext();
+  const nowOnline = chatUser.map((user) => (user._id));
+  //chat function
+  const isOnline = nowOnline.map(userId => onlineUser.includes(userId));
+
+  useEffect(() => {
+    socket?.on("newMessage", (newMessage) => {
+      setNewMessageUsers(newMessage)
+    })
+    return () => socket?.off("newMessage");
+  }, [socket, messages])
 
   //Show user with you chatted
   useEffect(() => {
@@ -66,7 +78,7 @@ const Sidebar = ({onSelectUser}) => {
   //   }else{
   //     toast.info("LogOut Cancelled")
   //   }
-    
+
   // }
   const handleLogout = async () => {
     // Ensure authUser is defined before proceeding
@@ -74,16 +86,16 @@ const Sidebar = ({onSelectUser}) => {
       toast.info("You are not logged in.");
       return;
     }
-  
+
     const confirmlogout = window.prompt("Type your username to LOGOUT");
-  
+
     // Check if the user input matches the authUser's username
     if (confirmlogout === authUser.username) {
       setLoading(true);
       try {
         const logout = await axios.post('/api/auth/logout');
         const data = logout.data;
-  
+
         if (data?.success === false) {
           setLoading(false);
           console.log(data?.message);
@@ -102,9 +114,9 @@ const Sidebar = ({onSelectUser}) => {
       toast.info("LogOut Cancelled");
     }
   };
-  
+
   //back from search result
-  const handleSearchback =()=>{
+  const handleSearchback = () => {
     setSearchUser([]);
     setSearchInput('')
   }
@@ -135,7 +147,7 @@ const Sidebar = ({onSelectUser}) => {
     onSelectUser(user);
     setSelectedConversation(user)
     setSelectedUserId(user._id);
-    
+    setNewMessageUsers('')
   };
   console.log(searchUser);
   return (
@@ -172,11 +184,10 @@ const Sidebar = ({onSelectUser}) => {
                 <div key={user._id}>
                   <div
                     onClick={() => handleUserClick(user)}
-                    className={`flex gap-3 items-center rounded p-2 py-1 cursor-pointer ${
-                      selectedUserId === user?._id ? "bg-sky-500" : ""
-                    }`}
+                    className={`flex gap-3 items-center rounded p-2 py-1 cursor-pointer ${selectedUserId === user?._id ? "bg-sky-500" : ""
+                      }`}
                   >
-                    <div className="avatar">
+                    <div className={`avatar ${isOnline[index] ? 'online' : ''}`}>
                       <div className="w-12 rounded-full">
                         <img src={user.profilepic} alt="user.img" />
                       </div>
@@ -192,9 +203,9 @@ const Sidebar = ({onSelectUser}) => {
           </div>
           <div className='mt-auto px-1 py-1 flex'>
             <button onClick={handleSearchback} className='bg-white rounded-full px-2 py-1 self-center'>
-            <IoArrowBackSharp size={25}/>
+              <IoArrowBackSharp size={25} />
             </button>
-           
+
           </div>
         </>
       ) : (
@@ -214,11 +225,10 @@ const Sidebar = ({onSelectUser}) => {
                     <div key={user._id}>
                       <div
                         onClick={() => handleUserClick(user)}
-                        className={`flex gap-3 items-center rounded p-2 py-1 cursor-pointer ${
-                          selectedUserId === user?._id ? "bg-sky-500" : ""
-                        }`}
+                        className={`flex gap-3 items-center rounded p-2 py-1 cursor-pointer ${selectedUserId === user?._id ? "bg-sky-500" : ""
+                          }`}
                       >
-                        <div className="avatar">
+                        <div className={`avatar ${isOnline[index] ? 'online' : ''}`}>
                           <div className="w-12 rounded-full">
                             <img src={user.profilepic} alt="user.img" />
                           </div>
@@ -228,7 +238,13 @@ const Sidebar = ({onSelectUser}) => {
                             {user.username}
                           </p>
                         </div>
+                        <div>
+                          {newMessageUsers.receiverId === authUser._id && newMessageUsers.senderId === user._id ?
+                            <div className="rounded-full bg-green-700 text-sm text-white px-[4px]">+1</div> : <></>
+                          }
+                        </div>
                       </div>
+
                       <div className="divider divide-solid px-3 h-[1px]"></div>
                     </div>
                   ))}
@@ -238,7 +254,7 @@ const Sidebar = ({onSelectUser}) => {
           </div>
           <div className='mt-auto px-1 py-1 flex'>
             <button onClick={handleLogout} className='hover:bg-red-600  w-10 cursor-pointer hover:text-white rounded-lg'>
-              <BiLogOut size={25}/>
+              <BiLogOut size={25} />
             </button>
             <p>Logout</p>
           </div>

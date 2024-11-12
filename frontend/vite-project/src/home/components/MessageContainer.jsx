@@ -70,8 +70,9 @@ if (data.success === false) {
   console.log(data.message);
 }
 setSending(false);
-setMessage([...messages,data])
 setSendData("");
+setMessage([...messages,data])
+
 }
 catch (error){
   setSending(false);

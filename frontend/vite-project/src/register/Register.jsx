@@ -116,12 +116,12 @@ const handleSubmit = async (e) => {
           >
             {loading ? "loading.." : "Register"}
           </button>
-          <button
+          {/* <button
             type="submit"
             className="w-full p-2 rounded bg-purple-600 text-white hover:bg-blue-700 transition duration-300"
           >
             Guest user
-          </button>
+          </button> */}
         </form>
         <div className="pt-2">
           <p className="text-sm font-semibold text-gray-800">
