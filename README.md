@@ -71,5 +71,18 @@ Before starting, make sure you have the following installed:
 3. **Receive notifications for new messages in real-time**  
    - You will receive notifications for any new incoming messages from users you are chatting with.
 
+---
+### Start the Application
+
+#### Frontend and Backend
+To run the frontend and backend servers, use the following commands in the root directory of the project:
+
+```bash
+# Frontend
+npm start
+
+# Backend
+npm run server
+
 
 
